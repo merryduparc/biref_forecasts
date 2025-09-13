@@ -1,6 +1,9 @@
 import numpy as np
 import itertools
 
+spectra_pspy = ["TT", "TE", "TB", "ET", "BT", "EE", "EB", "BE", "BB"]
+
+
 def bin_array(array, binning: int = None):
     """Bin a given array.
         If the array size is not a multiple of the binning,
