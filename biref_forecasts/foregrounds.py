@@ -79,7 +79,7 @@ def frequency_scaling(nu_GHz, beta=BETA_D) -> float:
 def multipole_scaling(ls, type='Cls', alpha=None) -> float:
     alpha = alpha or ALPHA_DUST
     if type == 'Cls':
-        fac = ls * (ls + 1) / (2 * pi)
+        fac = np.maximum(ls * (ls + 1) / (2 * pi), 1)
     elif type == 'Dls':
         fac = ls * 0 + 1
     return ((ls / 500) ** (alpha + 2)) / fac
@@ -111,7 +111,7 @@ def multipole_scaling_synchrotron(ls, type='Cls', alpha=ALPHA_S) -> float:
     if type == 'Cls':
         fac = ls * 0 + 1
     elif type == 'Dls':
-        fac = ls * (ls + 1) / (2 * pi)
+        fac = np.maximum(ls * (ls + 1) / (2 * pi), 1)
     return ((ls / 80) ** (alpha)) * fac
 
 def D_l_synchrotron(
@@ -174,7 +174,7 @@ def sync_fg_Cls(ls: list[int], nu_GHz: float, wanted_keys=["EE", "BB"], amp=None
     beta = beta or BETA_S
     amp_BB = amp_EE * r_E_B
     
-    fac = ls * (ls + 1) / (2 * pi)
+    fac = np.maximum(ls * (ls + 1) / (2 * pi), 1)
 
     Cls = {}
     Cls["EE"] = (
