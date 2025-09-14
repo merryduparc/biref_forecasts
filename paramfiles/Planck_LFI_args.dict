@@ -1,0 +1,12 @@
+splits = ["s030", "s044", "s070"]
+nu_GHzs = [30, 44, 70]
+
+Nls_filenames = [f"data/Nls/Nl_Planck_{band}.dat" for band in ['030', '044', '070']]
+
+fsky = 1.
+
+lmin = 50
+lmax = 1500
+bin_size = 40
+
+combination_method = "only_EB"

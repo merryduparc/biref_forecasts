@@ -1,0 +1,12 @@
+splits = ["s145"]
+nu_GHzs = [145]
+
+Nls_filenames = [f'data/Nls/Nl_SO LAT_{band}.dat' for band in ["145"]]
+
+fsky = 1.
+
+lmin = 400
+lmax = 8000
+bin_size = 40
+
+combination_method = "only_EB"

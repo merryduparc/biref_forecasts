@@ -1,0 +1,12 @@
+splits = ["s093", "s145", "s225", "s280"]
+nu_GHzs = [93, 145, 225, 280]
+
+Nls_filenames = [f'data/Nls/Nl_SO LAT_{band}.dat' for band in ["093", "145", "225", "280"]]
+
+fsky = 1.
+
+lmin = 400
+lmax = 8000
+bin_size = 40
+
+combination_method = "only_EB"

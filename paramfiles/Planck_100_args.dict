@@ -1,0 +1,12 @@
+splits = ["s100"]
+nu_GHzs = [100]
+
+Nls_filenames = [f"data/Nls/Nl_Planck_{band}.dat" for band in ['100']]
+
+fsky = 1.
+
+lmin = 50
+lmax = 2500
+bin_size = 40
+
+combination_method = "only_EB"
