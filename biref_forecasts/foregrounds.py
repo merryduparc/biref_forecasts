@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.optimize import curve_fit
-from functions.noise_functions import bin_array
+from biref_forecasts.utils import bin_array
 from math import pi
 
 h = 6.62607015e-34  # Planck's constant in J s

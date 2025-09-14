@@ -1,7 +1,7 @@
 import itertools
 import numpy as np
 import math
-from utils import SplitsSpectraCombinations, spectra_combinations_from_splits, extract_spectra_pairs, extract_splits_pairs
+from biref_forecasts.utils import SplitsSpectraCombinations, spectra_combinations_from_splits, extract_spectra_pairs, extract_splits_pairs
 
 
 def rotation_matrix(theta_i: float, theta_j: float) -> np.ndarray:
