@@ -18,14 +18,19 @@ from biref_forecasts import utils
 SAVE_PATH = 'data/Nls'
 os.makedirs(SAVE_PATH, exist_ok=True)
 
-EXPERIMENTS = ['Planck', 'SO LAT', 'SO SAT']
+EXPERIMENTS = ['Planck', 'SO LAT', 'SO LAT goal', 'SO SAT']
 
 BANDS = {
     'Planck': ['030', '044', '070', '100', '143', '217', '353'],
     'SO LAT': ['027', '039', '093', '145', '225', '280'],
+    'SO LAT goal': ['027', '039', '093', '145', '225', '280'],
     'SO SAT': ['027', '039', '093', '145', '225', '280'],
 }
 
+
+# RMS noises for SO LAT are for fsky=0.4, but we go up to fsky=0.56 when oberving galactic plane
+# Should I increase rms noise to take this into account ?? or is the coverage even ?
+fac_LAT = 1.
 # RMS polarization noise in uK.deg
 RMS = {
     'Planck': {
@@ -38,12 +43,20 @@ RMS = {
         '353': 7.31,
     },
     'SO LAT': {         # SO LAT numbers are in uK.arcmin
-        '027': 61 / 60 * np.sqrt(2),
-        '039': 30 / 60 * np.sqrt(2),
-        '093': 5.3 / 60 * np.sqrt(2),
-        '145': 6.6 / 60 * np.sqrt(2),
-        '225': 15 / 60 * np.sqrt(2),
-        '280': 35 / 60 * np.sqrt(2),
+        '027': 61 / 60 * np.sqrt(2) * fac_LAT,
+        '039': 30 / 60 * np.sqrt(2) * fac_LAT,
+        '093': 5.3 / 60 * np.sqrt(2) * fac_LAT,
+        '145': 6.6 / 60 * np.sqrt(2) * fac_LAT,
+        '225': 15 / 60 * np.sqrt(2) * fac_LAT,
+        '280': 35 / 60 * np.sqrt(2) * fac_LAT,
+    },
+    'SO LAT goal': {         # SO LAT numbers are in uK.arcmin
+        '027': 44 / 60 * np.sqrt(2) * fac_LAT,
+        '039': 23 / 60 * np.sqrt(2) * fac_LAT,
+        '093': 3.8 / 60 * np.sqrt(2) * fac_LAT,
+        '145': 4.1 / 60 * np.sqrt(2) * fac_LAT,
+        '225': 10 / 60 * np.sqrt(2) * fac_LAT,
+        '280': 25 / 60 * np.sqrt(2) * fac_LAT,
     },
     'SO SAT': {         # SO LAT numbers are in uK.arcmin
         '027': 35 / 60 * np.sqrt(2),
@@ -74,6 +87,14 @@ FWHM = {
         '225': 1.0,
         '280': 0.9,
     },
+    'SO LAT goal': {
+        '027': 7.4,
+        '039': 5.1,
+        '093': 2.2,
+        '145': 1.4,
+        '225': 1.0,
+        '280': 0.9,
+    },
     'SO SAT': {
         '027': 91,
         '039': 63,
@@ -86,6 +107,14 @@ FWHM = {
 
 L_KNEE = {
     'SO LAT': {
+        '027': 700,
+        '039': 700,
+        '093': 700,
+        '145': 700,
+        '225': 700,
+        '280': 700,
+    },
+    'SO LAT goal': {
         '027': 700,
         '039': 700,
         '093': 700,
@@ -113,6 +142,14 @@ ALPHA_1fN = {
         '225': -1.4,
         '280': -1.4,
     },
+    'SO LAT goal': {
+        '027': -1.4,
+        '039': -1.4,
+        '093': -1.4,
+        '145': -1.4,
+        '225': -1.4,
+        '280': -1.4,
+    },
     'SO SAT': {
         '027': -2.4,
         '039': -2.4,
@@ -132,6 +169,9 @@ SPECTRA_TO_COMPARE = {
     'SO LAT': {
         band: f'data/noise_model/Nls_SO{band}.dat' for band in BANDS['SO LAT']
     },
+    'SO LAT goal': {
+        band: None for band in BANDS['SO LAT']
+    },
     'SO SAT': {
         band: None for band in BANDS['SO LAT']
     },
@@ -144,6 +184,7 @@ SPECTRA_TO_COMPARE['Planck']['070'] = None
 COLORS = {
     'Planck': {band: f'C{i}' for i, band in enumerate(BANDS["Planck"])},
     'SO LAT': {band: f'C{i}' for i, band in enumerate(BANDS["SO LAT"])},
+    'SO LAT goal': {band: f'C{i}' for i, band in enumerate(BANDS["SO LAT goal"])},
     'SO SAT': {band: f'C{i}' for i, band in enumerate(BANDS["SO SAT"])},
 }
 
@@ -153,6 +194,10 @@ PLOTS_LIMS = {
         'ylims': (1, 50000)
     },
     'SO LAT': {
+        'xlims': (0, 5000),
+        'ylims': (.03, 3000)
+    },
+    'SO LAT goal': {
         'xlims': (0, 5000),
         'ylims': (.03, 3000)
     },
@@ -207,6 +252,6 @@ for exp in EXPERIMENTS:
     ax.set_xlabel(r'$\ell$', fontsize=16)
     ax.set_ylabel(r'$\ell(\ell + 1) N_\ell / (2\pi) [\mu K^2]$', fontsize=16)
     ax.set_title(f'{exp}', fontsize=16)
-    plt.savefig(f'plots/Nls_{exp}.png')
+    plt.savefig(f'plots/Nls/Nls_{exp}.png')
     
     plt.clf()
