@@ -19,6 +19,10 @@ This notebook compares the errors on birefringence and miscalibration angles for
 
 This code plots the error on birefringence angle as a function of the amplitude of the foregrounds.
 
+### `error_experiments.ipynb`
+
+This code plots forecasts MK method for different experiments and survey masks.
+
 ## Dependencies
 
 This code uses [`numpy`](https://numpy.org), [`matplotlib`](https://matplotlib.org) and [`pspy`](https://github.com/simonsobs/pspy). Which are all installable through pip.
