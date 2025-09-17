@@ -5,6 +5,7 @@ import numpy as np
 from math import pi
 from copy import deepcopy
 import seaborn as sns
+import yaml
 
 plt.rcParams.update({
     "mathtext.fontset": "cm",   # Computer Modern
@@ -103,14 +104,17 @@ freq_labels = {
     "SO LAT": [93, 145, 225, 280],
 }
 
+with open(f'fg_params.yaml', "r") as f:
+    fg_params: dict = yaml.safe_load(f)
+
 measurements = {}
 if 'Planck' in WHICH:
-    measurements[r"Planck $f_{\rm sky}$=0.92"] = [4.898, 0.11 * np.sqrt(0.92)],
-    measurements[r"Planck $f_{\rm sky}$=0.62"] = [1.05, 0.23 * np.sqrt(0.62)],
+    measurements[r"Planck $f_{\rm sky}$=0.92"] = [fg_params['amp_dust']['full_sky'][0.92], 0.11 * np.sqrt(0.92)],
+    measurements[r"Planck $f_{\rm sky}$=0.62"] = [fg_params['amp_dust']['full_sky'][0.62], 0.23 * np.sqrt(0.62)],
 
 if 'SO' in WHICH:
-    measurements[r"CO mask $f_{\rm sky}$=0.56"] = [3.867, np.sqrt(cov_thru_param(args_so, "amp_dust", [[3.867 for _ in range(4)]])[1][0][0, 0])],
-    measurements[r"CO+Gal mask $f_{\rm sky}$=0.39"] = [0.886, np.sqrt(cov_thru_param(args_so, "amp_dust", [[0.886 for _ in range(4)]])[1][0][0, 0])],
+    measurements[r"CO mask $f_{\rm sky}$=0.56"] = [fg_params['amp_dust']['SO'][0.56], np.sqrt(cov_thru_param(args_so, "amp_dust", [[3.867 for _ in range(4)]])[1][0][0, 0])],
+    measurements[r"CO+Gal mask $f_{\rm sky}$=0.39"] = [fg_params['amp_dust']['SO'][0.39], np.sqrt(cov_thru_param(args_so, "amp_dust", [[0.886 for _ in range(4)]])[1][0][0, 0])],
 
 measurements_marker = {
     r"Planck $f_{\rm sky}$=0.92": '*',
