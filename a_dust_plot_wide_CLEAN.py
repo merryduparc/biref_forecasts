@@ -1,4 +1,5 @@
 from biref_forecasts.biref_fisher_class import FisherBiref
+from biref_forecasts.utils import linestyles
 from matplotlib import pyplot as plt
 from pspy import so_spectra, so_dict
 import numpy as np
@@ -12,50 +13,33 @@ plt.rcParams.update({
     "font.family": "serif",     # Match LaTeX style
 })
 
+# plots SO LAT and/or Planck
 WHICH = ['SO', 'Planck']    # SO and/or Planck
 
-spectra_pspy = ["TT", "TE", "TB", "ET", "BT", "EE", "EB", "BE", "BB"]
-list_args = ['splits', 'nu_GHzs', 'bls_filenames', 'Nls_filenames'] # Args of fisher class that are a list
-def args_combined(args_1: dict, args_2: dict) -> dict:
-    args = deepcopy(args_1)
-    for arg in list_args:
-        arg_list = list(deepcopy(args_1[arg]))
-        arg_list.extend(args_2[arg])
-        args[arg] = arg_list
-    return args
-
 ### PLANCK
-freqs_planck = ['100', '143', '217', '353']
-
 args_planck = so_dict.so_dict()
 args_planck.read_from_file('paramfiles/Planck_HFI_args.dict')
 
 ### PLANCK FREQS
+freqs_planck = ['100', '143', '217', '353']
 args_planck_freqs = {}
 for i, band in enumerate(freqs_planck):
     args_planck_freqs[band] = so_dict.so_dict()
     args_planck_freqs[band].read_from_file(f'paramfiles/Planck_{band}_args.dict')
 
-# args_Planck_2f = args_combined(args_planck_freqs['100'], args_planck_freqs['217'])
-# args_Planck_2f_auto = deepcopy(args_Planck_2f)
-# args_Planck_2f_auto['combination_method'] = 'only_EB_auto'
-# args_Planck_2f['alphas_mapping'] = [0, 0]
-# args_Planck_3f = args_combined(args_Planck_2f, args_planck_freqs['143'])
-# args_Planck_3f['alphas_mapping'] = [0, 0, 0]
-
 ### SO
-freqs_so = ["093", "145", "225", "280"]
-
 args_so = so_dict.so_dict()
 args_so.read_from_file('paramfiles/SO_MF_HF_args.dict')
 args_so['fsky'] = 1. # Fix this to on so you don;t have to multiply by sqrt(fsky) then
 
 ### SO freqs
+freqs_so = ["093", "145", "225", "280"]
 args_SO_freqs = {}
 for i, band in enumerate(freqs_so):
     args_SO_freqs[band] = so_dict.so_dict()
     args_SO_freqs[band].read_from_file(f'paramfiles/SO_{band}_args.dict')
 
+# Function that iterate cov matrix comoutation through a list of a given parameter
 def cov_thru_param(args, param_name, param_list):
     args_v = deepcopy(args)
     cov_list = []
@@ -67,22 +51,9 @@ def cov_thru_param(args, param_name, param_list):
         cov_list.append(np.linalg.inv(fisher_list[i]) * ((180 / pi) ** 2))
     return np.array(fisher_list), np.array(cov_list)
 
-linestyles = [
-    "--",
-    "-.",
-    ":",
-    (0, (3, 4, 1, 4)),
-    (0, (1, 2, 1, 2, 1, 2)),
-    (0, (3, 10, 1, 10)),
-    "--",
-    "-.",
-]
-
 amps_list = np.logspace(-4, 4, 35)
 amps_list_planck = [[amp for _ in args_planck['splits']] for amp in amps_list]
 amps_list_so = [[amp for _ in args_so['splits']] for amp in amps_list]
-amps_list_2_freq = [[amp for _ in range(2)] for amp in amps_list]
-amps_list_3_freq = [[amp for _ in range(3)] for amp in amps_list]
 
 cov_lists = {}
 
@@ -95,7 +66,7 @@ if 'SO' in WHICH:
     _, cov_lists["SO LAT"] = cov_thru_param(args_so, "amp_dust", amps_list_so)
     # for i, band in enumerate(freqs_so):
     #     _, cov_lists[f"SO LAT {band}"] = cov_thru_param(args_SO_freqs[f'{band}'], "amp_dust", amps_list_2_freq)
-    
+
 
 plt.figure()
 fig, ax = plt.subplots(dpi=150, figsize=(8, 4.5))
@@ -104,6 +75,7 @@ freq_labels = {
     "SO LAT": [93, 145, 225, 280],
 }
 
+# Load fg params to plot known measurements
 with open(f'fg_params.yaml', "r") as f:
     fg_params: dict = yaml.safe_load(f)
 
@@ -123,13 +95,13 @@ measurements_marker = {
     r"CO+Gal mask $f_{\rm sky}$=0.39": 'P',
 }
 
+# Some plots color stuff
 palette = {}
 palette_Planck = sns.color_palette("Blues", n_colors=12)
 palette_SO = sns.color_palette("Oranges", n_colors=12)
 palette['Planck'] = palette_Planck[-1]
 palette['Planck 143GHz'] = palette_Planck[-6]
 palette['SO LAT'] = palette_SO[-1]
-palette['SO LAT LS'] = palette_SO[-1]
 for i in range(4):
     palette[f'Planck {freqs_planck[i]}'] = palette_Planck[i + 2]
     palette[f'SO LAT {freqs_so[i]}'] = palette_SO[i + 2]
@@ -140,6 +112,7 @@ measurements_colors = {
     r"CO+Gal mask $f_{\rm sky}$=0.39": palette_SO[-1],
 }
 
+# Plots \sigma_\beta and \sigma_\alpha if needed
 plot_alphas = False
 for i, (exp, cov_list) in enumerate(cov_lists.items()):
     ax.plot(amps_list, np.sqrt(cov_list[:, 0, 0]), label=f"{exp}", color=palette[exp],)
@@ -155,6 +128,7 @@ for i, (exp, cov_list) in enumerate(cov_lists.items()):
                 alpha=0.15,
             )
 
+# Plots \sigma_{\alpha+\beta}
 sigmas_stat = {
     'Planck': 0.033 * np.sqrt(0.92),
     'SO LAT': 0.008 * np.sqrt(0.56),
@@ -162,6 +136,7 @@ sigmas_stat = {
 for exp, sigma in sigmas_stat.items():
     ax.axhline(sigma, color=palette[exp], linestyle='--', label=fr'{exp} $\sigma_{{\alpha+\beta}}$', alpha=0.5, zorder=-10)
 
+# Plots measurements points
 for meas_name, meas in measurements.items():
     ax.plot(*meas[0], marker=measurements_marker[meas_name], color=measurements_colors[meas_name], label=meas_name, linestyle='none', mfc='white', markersize=7)
 

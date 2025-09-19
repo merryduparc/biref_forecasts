@@ -214,7 +214,7 @@ def compute_Nls(rms:float, fwhm:float, l_knee:int, alpha:float=-1.4) -> dict[np.
     Nls = {}
     for spec in utils.spectra_pspy:
         ls = np.arange(2, 10000)
-        fac = ls * (ls + 1) / (2 * np.pi)
+        fac = ls * (ls + 1) / (2 * np.pi)   # Nls are in D_ell
         if (spec in ['EE', 'BB']):
             mean[spec] = np.full_like(ls, (rms ** 2) * ((np.pi / 180) ** 2), dtype=float) * fac
             if l_knee is not None:
@@ -228,6 +228,7 @@ def compute_Nls(rms:float, fwhm:float, l_knee:int, alpha:float=-1.4) -> dict[np.
 
     return ls, Nls
 
+# Compute and plot noise curves
 for exp in EXPERIMENTS:
     plt.figure()
     fig, ax = plt.subplots(dpi=150, figsize=(8, 4.5))

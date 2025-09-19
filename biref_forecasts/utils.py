@@ -3,6 +3,17 @@ import itertools
 
 spectra_pspy = ["TT", "TE", "TB", "ET", "BT", "EE", "EB", "BE", "BB"]
 
+linestyles = [
+    "--",
+    "-.",
+    ":",
+    (0, (3, 4, 1, 4)),
+    (0, (1, 2, 1, 2, 1, 2)),
+    (0, (3, 10, 1, 10)),
+    "--",
+    "-.",
+]
+
 
 def bin_array(array, binning: int = None):
     """Bin a given array.
@@ -31,13 +42,15 @@ def spectra_combinations_from_splits(
     comb_w_auto : comb + EE BB EB for i == j
     product : everything EE BB EB BE for all i, j
         (contains redundancies, not recommanded for likelihood)
+    much othermuch other...
 
     Args:
-        input_strings (_type_): list of str corresponding to individual splits
+        input_strings (list): list of str corresponding to individual splits
             (e.g. ['s0', 's1', ...])
+        method (str): which method to use
 
     Returns:
-        _type_: list of str with all combinations.
+        list: list of str with all combinations.
     """
 
     result = []
@@ -101,6 +114,7 @@ def extract_pairs(input_list: list[str]) -> list[list[str]]:
     """
     From a list of str in the format 'Xsplit1Ysplit2',
     returns a list of save size with elements '[Xsplit1, Ysplit2], ...'
+    CUT IN THE MIDDLE, split names must have same lenght
 
     Args:
         input_list (_type_): input list
@@ -116,8 +130,9 @@ def extract_pairs(input_list: list[str]) -> list[list[str]]:
 
 def extract_spectra_pairs(input_list: list[str]) -> list[str]:
     """
-    From a list of str in the format 'Xsplit1Ysplit2',
-    returns a list of same size with only 'XY'
+    From a list of str in the format 'Xsplit1Ysplit2', ...,
+    returns a list of same size with only 'XY', ....
+    Split names must have same lenght
 
     Args:
         input_list (_type_): input list
@@ -134,8 +149,9 @@ def extract_spectra_pairs(input_list: list[str]) -> list[str]:
 
 def extract_spectra_pairs_nested(input_list: list[str]) -> list[str]:
     """
-    From a list of str in the format 'Xsplit1Ysplit2',
-    returns a list of elements ['X', 'Y']
+    From a list of str in the format 'Xsplit1Ysplit2', ...,
+    returns a list of elements ['X', 'Y'], ...
+    Split names must have same lenght.
 
     Args:
         input_list (_type_): input list
@@ -151,8 +167,9 @@ def extract_spectra_pairs_nested(input_list: list[str]) -> list[str]:
 
 def extract_splits_pairs(input_list: list[str]) -> list[list[str]]:
     """
-    From a list of str in the format 'Xsplit1Ysplit2',
+    From a list of str in the format 'Xsplit1Ysplit2', ...,
     returns a list of save size with elements '[split1, split2], ...'
+    Split names must have same lenght.
 
     Args:
         input_list (_type_): input list
@@ -167,7 +184,9 @@ def extract_splits_pairs(input_list: list[str]) -> list[list[str]]:
 
 
 def extract_unwanted_indices(input_list: list[str]) -> list[bool]:
-    """Return True for indices whit : ExEx BxBx or BxEx
+    """
+    Return True for indices with : ExEx BxBx or BxEx
+    Split names must have same lenght.
 
     Args:
         input_list (_type_): _description_
@@ -194,7 +213,9 @@ def extract_unwanted_indices(input_list: list[str]) -> list[bool]:
 
 
 def extract_noisy_indices(input_list: list[str]) -> list[bool]:
-    """Same as extract_unwanted_indices but only ExEx and BxBx
+    """
+    Same as extract_unwanted_indices but only ExEx and BxBx
+    Split names must have same lenght.
 
     Args:
         input_list (_type_): _description_
@@ -219,14 +240,15 @@ class SplitsSpectraCombinations:
         self,
         input_splits: list[str] = None,
         method: str = "comb_w_auto_EB",
-    ):  
-        """Silly class to quickly compute all kind of combinations of a list of bands
+    ):
+        """
+        Silly class to quickly compute all kind of combinations of a list of bands.
 
         Args:
             input_splits (list[str], optional): List of bands, should all have same lenght. Defaults to None.
             method (str, optional): Combination method, check spectra_combinations_for_splits. Defaults to "comb_w_auto_EB".
         """
-        input_splits = input_splits or ["s0", "s1"] # Should all have the asame lenght
+        input_splits = input_splits or ["s0", "s1"]  # Should all have the asame lenght
         self.splits_spec_list = spectra_combinations_from_splits(
             input_splits, method=method
         )
