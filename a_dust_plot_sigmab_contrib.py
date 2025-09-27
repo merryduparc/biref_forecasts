@@ -20,12 +20,12 @@ list_args = [
     "noise_filenames",
 ]  # Args of fisher class that are a list
 
-which_experiment = "Planck_HFI_no353"  # Planck_HFI, Planck_HFI_no353 or SO_MF_HF
+which_experiment = "SO_MF_HF"  # Planck_HFI, Planck_HFI_no353 or SO_MF_HF
 
 ylims = {
     "Planck_HFI": [1e-5, 1e1],
     # "Planck_all_353": [1e-5, 1e3],
-    "Planck_HFI_no353": [1e-5, 1e1],
+    "Planck_HFI_no353": [1e-5, 3e1],
     "SO_MF_HF": [1.2e-6, 1e0],
 }
 
@@ -186,6 +186,7 @@ ax[0].plot(
     linewidth=2.4,
 )
 
+ax[0].set_title(which_experiment, fontsize=18)
 ax[0].legend(loc="upper right")
 ax[0].set_ylabel(r"$\sigma(\beta)^2 f_{\rm sky}$", fontsize=20)
 ax[0].grid(which="both", alpha=0.2)
@@ -201,10 +202,9 @@ ax[1].set_ylim(-2e-2, 1.02)
 # ax[1].semilogy()
 ax[1].semilogx()
 
-
 plt.tight_layout()
-plt.savefig(f"plots/a_dust_sigma_b_{which_experiment}")
-plt.savefig(f"plots/a_dust_sigma_b_{which_experiment}.pdf")
+plt.savefig(f"plots/sigma_beta_contributions/a_dust_sigma_b_{which_experiment}")
+plt.savefig(f"plots/sigma_beta_contributions/a_dust_sigma_b_{which_experiment}.pdf")
 
 # ax[0].set_yscale("linear")
 # ax[0].set_ylim(0, 0.3e0)
