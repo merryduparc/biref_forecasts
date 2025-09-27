@@ -253,6 +253,6 @@ for exp in EXPERIMENTS:
     ax.set_xlabel(r'$\ell$', fontsize=16)
     ax.set_ylabel(r'$\ell(\ell + 1) N_\ell / (2\pi) [\mu K^2]$', fontsize=16)
     ax.set_title(f'{exp}', fontsize=16)
-    plt.savefig(f'plots/Nls/Nls_{exp}.png')
+    plt.savefig(f'plots/noises/Nls_{exp}.png')
     
     plt.clf()
