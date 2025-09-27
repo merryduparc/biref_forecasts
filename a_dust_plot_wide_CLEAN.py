@@ -151,5 +151,5 @@ ax.semilogy()
 ax.semilogx()
 
 plt.tight_layout()
-plt.savefig(f'plots/a_dust_{'_'.join(WHICH)}_CLEAN.pdf')
-plt.savefig(f'plots/a_dust_{'_'.join(WHICH)}_CLEAN')
+plt.savefig(f'plots/sigma_beta/a_dust_{'_'.join(WHICH)}_CLEAN.pdf')
+plt.savefig(f'plots/sigma_beta/a_dust_{'_'.join(WHICH)}_CLEAN')
